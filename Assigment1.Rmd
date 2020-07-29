@@ -25,7 +25,7 @@ library(rwalkr)
 ```{r data, include=FALSE}
 starting_day <- as.Date('2020-07-08')
 
-steps <- rwalkr::melb_walk(from = starting_day, to = Sys.Date())
+steps <- rwalkr::melb_walk(from = starting_day, to = Sys.Date() - 1L)
 
 ```
 
