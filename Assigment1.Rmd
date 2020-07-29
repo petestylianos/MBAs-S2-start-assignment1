@@ -1,0 +1,69 @@
+---
+title: "How Melburnians walk during COVID-19"
+author: "Panagiotis Stylianos"
+date: "`r Sys.Date()`"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#### Introduction
+
+In this document we examine the walking frequency of Melburnians during the July
+lockdown.  
+The data are provided in the __rwalkr__ package.
+
+```{r libraries, include=FALSE}
+library(tidyverse)
+library(rwalkr)
+```
+
+
+
+```{r data, include=FALSE}
+starting_day <- as.Date('2020-07-08')
+
+steps <- rwalkr::melb_walk(from = starting_day, to = Sys.Date())
+
+```
+
+
+#### Plot of Total Steps per Day
+
+
+```{r plot, echo=FALSE, message=FALSE,include=TRUE, fig.height= 2, fig.align="left"}
+steps %>% 
+  group_by(Date) %>% 
+  summarise(TotalSteps = sum(Count, na.rm = T)) %>% 
+  ggplot(aes(Date, TotalSteps)) +
+    geom_line()
+```
+
+#### Table of five most active sensors
+
+```{r sensors, echo=FALSE, include=TRUE, message=FALSE, warning=FALSE}
+steps %>% 
+  group_by(Sensor) %>% 
+  summarise(TotalSteps = sum(Count, na.rm = T)) %>% 
+  mutate(Proportion = round(TotalSteps/sum(TotalSteps) * 100, 2)) %>% 
+  arrange(desc(Proportion)) %>% 
+  head(5)
+```
+#### Formula for proportion
+
+$y_{i}$ = $x_{i}/\sum_{i=1}^{`r nrow(steps)`} x_{i}$
+
+where $x_{i}$ is the total steps monitored by this sensor,
+$sum_{i=1}^{`r nrow(steps)`} x_{i}$ is the total steps monitored by all sensors. and $y_{i}$ is the proportion that each sensor contributed to the dataset.
+
+#### Table of Packages and functions used in the report
+
+Library  | Functions
+---------|-----------------------
+base     | as.Date(), Sys.Date(), sum()
+dplyr    | group_by(), summarise(), mutate(), arrange()
+ggplot2  |ggplot(), aes(), geom_line()
+rwalkr   |melb_walk()  
+            
